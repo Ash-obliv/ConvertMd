@@ -10,6 +10,15 @@ __pycache__/
 *.egg-info/
 dist/
 build/
+*.spec
+
+# Generated / temp
+icon.png
+icon.ico
+_tmp_icon.png
+gen_ico.py
+gen_icon.py
+generate_icon.py
 
 # Virtual environments
 venv/

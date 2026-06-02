@@ -1,21 +1,25 @@
 # ConvertMD
 
-Markdown 与 Word 文档互转工具，基于 PyQt6 + Pandoc。
+Markdown ↔ Word 双向转换工具，基于 PyQt6 + Pandoc，支持 Windows。
 
 ## 功能
 
-- **MD → Word**：将 Markdown 文件转换为 Word 文档（.docx）
-- **Word → MD**：将 Word 文档转换为 Markdown 文件
-- 支持自定义选择输入文件和输出路径
-- 可自定义 Pandoc 可执行文件路径
-- 支持深色 / 浅色主题切换
+- **MD → Word**：Markdown 文件一键转换为 .docx 文档
+- **Word → MD**：.docx 文档一键转换为 Markdown 文件
+- 选择源文件后自动生成目标路径，无需手动填写
+- 转换成功弹窗，可直接打开文件所在文件夹
+- 支持浅色 / 深色主题切换
+- 可自定义 Pandoc 路径
 
-## 环境要求
+## 快速开始
 
-- Python 3.10+
-- [Pandoc](https://pandoc.org/installing.html)（推荐 3.x）
+### 方式一：下载 EXE（推荐）
 
-## 安装
+从 [Releases](../../releases) 页面下载 `ConvertMD.exe`，双击运行即可。
+
+> 需要先安装 [Pandoc](https://pandoc.org/installing.html) 并确保 `pandoc` 在系统 PATH 中。如果不在 PATH 里，可在软件的 **设置** 页面手动指定 pandoc.exe 路径。
+
+### 方式二：从源码运行
 
 ```bash
 # 1. 克隆仓库
@@ -24,22 +28,61 @@ cd ConvertMd
 
 # 2. 创建虚拟环境（可选）
 python -m venv venv
-# Windows
-venv\Scripts\activate
-# macOS / Linux
-source venv/bin/activate
+venv\Scripts\activate     # Windows
+# source venv/bin/activate  # macOS / Linux
 
 # 3. 安装依赖
 pip install -r requirements.txt
-```
 
-## 使用
-
-```bash
+# 4. 运行
 python main.py
 ```
 
-首次运行会自动检测 Pandoc 路径。如果默认路径不对，在 **设置** 页面中指定 Pandoc 的正确位置。
+## 使用说明
+
+1. 打开软件，左侧导航栏选择 **MD → Word** 或 **Word → MD**
+2. 点击 **浏览…** 选择源文件，目标路径会自动生成在同目录下
+3. 点击 **开始转换**，等待完成
+4. 弹窗提示成功后，可点击 **打开所在文件夹** 直接定位文件
+
+如果 Pandoc 不在系统 PATH 中：
+- 进入 **设置** 页面，指定 pandoc.exe 的实际路径，点击保存
+
+## 环境要求
+
+| 依赖 | 说明 |
+|------|------|
+| Python | 3.10+（仅源码运行需要） |
+| Pandoc | 3.x 推荐 |
+| PyQt6 | 6.10+（pip 自动安装） |
+
+## 打包
+
+```bash
+pip install pyinstaller
+python main.py --gen-icon        # 生成图标文件
+pyinstaller --onefile --windowed --icon=icon.ico --name=ConvertMD main.py
+# 输出在 dist/ConvertMD.exe
+```
+
+## 项目结构
+
+```
+Convertmd/
+├── main.py              # 入口
+├── requirements.txt
+├── core/
+│   ├── __init__.py      # 配置常量、find_pandoc()
+│   └── converter.py     # pandoc 调用封装
+├── ui/
+│   ├── app_icon.py      # 程序化生成图标
+│   ├── convert_page.py  # 转换页面
+│   ├── file_row.py      # 文件选择行组件
+│   ├── main_window.py   # 主窗口
+│   ├── settings_page.py # 设置页面
+│   ├── sidebar.py       # 左侧导航栏
+│   └── theme.py         # 浅色/深色主题
+```
 
 ## 许可
 
