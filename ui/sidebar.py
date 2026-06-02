@@ -35,9 +35,10 @@ class Sidebar(QFrame):
 
         self.btn_md2word = QPushButton("  MD  →  Word")
         self.btn_word2md = QPushButton("  Word  →  MD")
+        self.btn_pdf2md = QPushButton("  PDF  →  MD")
         self.btn_settings = QPushButton("  设置")
 
-        for btn in (self.btn_md2word, self.btn_word2md, self.btn_settings):
+        for btn in (self.btn_md2word, self.btn_word2md, self.btn_pdf2md, self.btn_settings):
             btn.setObjectName("navBtn")
             btn.setCheckable(True)
             btn.setFixedHeight(40)
@@ -48,9 +49,10 @@ class Sidebar(QFrame):
 
         self.btn_md2word.clicked.connect(lambda: self._switch(0, self.btn_md2word))
         self.btn_word2md.clicked.connect(lambda: self._switch(1, self.btn_word2md))
-        self.btn_settings.clicked.connect(lambda: self._switch(2, self.btn_settings))
+        self.btn_pdf2md.clicked.connect(lambda: self._switch(2, self.btn_pdf2md))
+        self.btn_settings.clicked.connect(lambda: self._switch(3, self.btn_settings))
 
-        self._buttons = [self.btn_md2word, self.btn_word2md, self.btn_settings]
+        self._buttons = [self.btn_md2word, self.btn_word2md, self.btn_pdf2md, self.btn_settings]
         self._stack = stack
         self._switch(0, self.btn_md2word)
 

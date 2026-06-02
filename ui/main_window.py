@@ -14,6 +14,7 @@ from ui.convert_page import ConvertPage
 from ui.settings_page import SettingsPage
 from ui.sidebar import Sidebar
 from ui.theme import apply_theme
+from core.converter import pdf_to_md
 
 SETTINGS_KEY_THEME = "theme/mode"
 
@@ -21,7 +22,7 @@ SETTINGS_KEY_THEME = "theme/mode"
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("ConvertMD — Markdown ⇄ Word")
+        self.setWindowTitle("ConvertMD — 文档转换工具")
         self.resize(800, 540)
         self.setMinimumSize(680, 440)
         self.setWindowIcon(make_icon())
@@ -47,7 +48,17 @@ class MainWindow(QMainWindow):
             self._settings,
         ))
 
-        # page 2: Settings
+        # page 2: PDF → MD
+        self._stack.addWidget(ConvertPage(
+            "PDF → MD", "pdf", "markdown",
+            ".pdf", ".md",
+            "PDF 文件 (*.pdf);;所有文件 (*)",
+            "Markdown (*.md);;所有文件 (*)",
+            self._settings,
+            convert_func=pdf_to_md,
+        ))
+
+        # page 3: Settings
         self._stack.addWidget(SettingsPage(
             QApplication.instance(), self._settings))
 

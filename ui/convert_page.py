@@ -14,30 +14,33 @@ from PyQt6.QtWidgets import (
 )
 
 from core import find_pandoc
-from core.converter import run
+from core.converter import run_pandoc
 from ui.file_row import FileRow
 
 
 class ConvertPage(QWidget):
     def __init__(self, title: str, from_fmt: str, to_fmt: str,
                  in_ext: str, out_ext: str, in_filter: str, out_filter: str,
-                 settings: QSettings, parent=None):
+                 settings: QSettings, convert_func=None, parent=None):
+        """
+        convert_func: 可选的自定义转换函数 (src, dst) -> (bool, msg)。
+                      不传则使用 pandoc 转换。
+        """
         super().__init__(parent)
         self._from_fmt = from_fmt
         self._to_fmt = to_fmt
         self._out_ext = out_ext
         self._settings = settings
+        self._convert_func = convert_func
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(32, 28, 32, 24)
         layout.setSpacing(14)
 
-        # 标题
         page_title = QLabel(title)
         page_title.setObjectName("pageTitle")
         layout.addWidget(page_title)
 
-        # 说明
         layout.addWidget(QLabel(f"选择 {in_ext.upper()} 文件，自动生成 {out_ext.upper()} 保存路径。"))
 
         # 源文件
@@ -94,12 +97,15 @@ class ConvertPage(QWidget):
             self._log("请指定保存路径。")
             return
 
-        pandoc = find_pandoc(self._settings)
         self._log("正在转换，请稍候…")
         self.convert_btn.setEnabled(False)
         QApplication.processEvents()
 
-        ok, msg = run(src, dst, self._from_fmt, self._to_fmt, pandoc)
+        if self._convert_func:
+            ok, msg = self._convert_func(src, dst)
+        else:
+            pandoc = find_pandoc(self._settings)
+            ok, msg = run_pandoc(src, dst, self._from_fmt, self._to_fmt, pandoc)
 
         self.convert_btn.setEnabled(True)
         if ok:
